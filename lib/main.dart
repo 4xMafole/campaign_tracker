@@ -51,6 +51,9 @@ class _HelloWorldPageState extends State<HelloWorldPage> {
     super.dispose();
   }
 
+  //Website (Install Application) -> parameters (UTM) -> installed + first launched -> firebase analytics
+  //https://campaign-tracker-3d.web.app/campaign?utm_source=facebook&utm_medium=cpc&utm_campaign=spring_sale
+  //app Links (https/http)
 
 
   @override

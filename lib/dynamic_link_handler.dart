@@ -68,17 +68,10 @@ final class DynamicLinkHandler {
         },
       );
 
+      log("UTM parameters found in the link");
     } else {
       log("No UTM parameters found in the link", name: 'Dynamic Link Handler');
     }
   }
 
-  /// Provides the short url for your dynamic link.
-  Future<String> createProductLink({
-    required int id,
-    required String title,
-  }) async {
-    // Call Rest API if link needs to be generated from backend.
-    return 'https://example.com/products?id=$id&title=$title';
-  }
 }
