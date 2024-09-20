@@ -1,9 +1,21 @@
+
 import 'package:flutter/material.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'dart:developer';  // Import this to use logging
 
-void main() {
+// Step 1: Integrate the DynamicLinkHandler class
+import 'dynamic_link_handler.dart';  // Assuming you saved the handler in a file named dynamic_link_handler.dart
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Step 2: Initialize the DynamicLinkHandler
+  await DynamicLinkHandler.instance.initialize();
+
   runApp(const MyApp());
 }
 
@@ -27,58 +39,32 @@ class HelloWorldPage extends StatefulWidget {
 }
 
 class _HelloWorldPageState extends State<HelloWorldPage> {
-  StreamSubscription? _sub;
-  late AppLinks _appLinks;
 
   @override
   void initState() {
     super.initState();
-    initUniLinks();
-  }
-
-  Future<void> initUniLinks() async {
-    _appLinks = AppLinks();
-
-    // Handle incoming links while the app is running
-    _sub = _appLinks.uriLinkStream.listen((Uri? uri) {
-      if (uri != null) {
-        _handleIncomingLink(uri.toString());
-      }
-    }, onError: (Object err) {});
-  }
-
-  void _handleIncomingLink(String link) {
-    final uri = Uri.parse(link);
-    final utmSource = uri.queryParameters['utm_source'];
-    final utmMedium = uri.queryParameters['utm_medium'];
-    final utmCampaign = uri.queryParameters['utm_campaign'];
-
-    FirebaseAnalytics.instance.logEvent(
-      name: 'campaign_install',
-      parameters: {
-        'utm_source': utmSource!,
-        'utm_medium': utmMedium!,
-        'utm_campaign': utmCampaign!,
-      },
-    );
-
-    // Handle the campaign data as needed
-    print('UTM Source: $utmSource');
-    print('UTM Medium: $utmMedium');
-    print('UTM Campaign: $utmCampaign');
   }
 
   @override
   void dispose() {
-    _sub?.cancel();
+    // The DynamicLinkHandler is a singleton, so no need to manage its lifecycle here.
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Custom URL Handling')),
-      body: const Center(child: Text('Hello World!')),
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Hello World!'),
+          ],
+        ),
+      ),
     );
   }
 }
